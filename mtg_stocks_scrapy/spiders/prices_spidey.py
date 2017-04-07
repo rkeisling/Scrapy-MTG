@@ -6,37 +6,10 @@ from random import uniform
 
 def generate_needed_urls():
     all_needed_urls = []
-    # with open("card_convert.p", 'rb') as fin:
-    #     card_data = pickle.load(fin)
-    # with open('deckbox.json') as fin:
-    #     deckbox_data = json.loads(fin)
-
-    card_data = {
-        'Shadows over Innistrad': {
-            'Convicted Killer': {
-                'card_id': '/cards/30711',
-                'set_id': '/sets/259'
-            }
-        },
-        'Guildpact': {
-            "Abyssal Nocturnus": {
-                'card_id': '/cards/4421',
-                'set_id': '/sets/24'
-            }
-        }
-    }
-
-    deckbox_data = [{
-        'cardset': 'Guildpact',
-        'name': 'Abyssal Nocturnus',
-        'inv_count': 1,
-        'foil': False
-    }, {
-        'cardset': 'Shadows over Innistrad',
-        'name': 'Convicted Killer',
-        'inv_count': 1,
-        'foil': False
-    }]
+    with open("card_convert.p", 'rb') as fin:
+        card_data = pickle.load(fin)
+    with open('deckbox.json') as fin:
+        deckbox_data = json.loads(fin)
 
     for each in deckbox_data:
         name = each['name']

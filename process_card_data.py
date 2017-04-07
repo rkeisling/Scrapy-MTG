@@ -27,7 +27,6 @@ def reformat_data(data):
     Puts the disorganized data dictionary into a more suitable and usable format.
     """
     new_dict = {}
-    cardname_dict = {}
     with open('card_sets.p', 'rb') as fin:
         card_sets = pickle.load(fin)
     for each in data:
@@ -35,8 +34,11 @@ def reformat_data(data):
         card_id = each['card_id']
         set_id = each['cardset']
         cardname = each['cardname']
-        cardname_dict[cardname] = {'card_id': card_id, 'set_id': set_id}
-        new_dict[setname] = cardname_dict
+        if setname not in new_dict:
+            new_dict[setname] = {}
+            new_dict[setname][cardname] = {'card_id': card_id, 'set_id': set_id}
+        else:
+            new_dict[setname][cardname] = {'card_id': card_id, 'set_id': set_id}
         print("Added {0} to the set {1}!".format(cardname, setname))
     return new_dict
 
