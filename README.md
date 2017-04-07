@@ -1,0 +1,1 @@
+mtg_stocks_scrapy
