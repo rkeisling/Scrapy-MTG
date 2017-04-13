@@ -1,7 +1,6 @@
 import json
 import pickle
-from time import sleep
-from random import uniform
+import datetime
 import scrapy
 
 
@@ -10,10 +9,27 @@ def generate_needed_urls():
     Makes all urls using deckbox information along with all card information (from MTGStocks).
     """
     all_needed_urls = []
-    with open("card_convert.p", 'rb') as fin:
-        card_data = pickle.load(fin)
-    with open('deckbox.json') as fin:
-        deckbox_data = json.loads(fin.read())
+    # with open("card_convert.p", 'rb') as fin:
+    #     card_data = pickle.load(fin)
+    # with open('deckbox.json') as fin:
+    #     deckbox_data = json.loads(fin.read())
+
+    # some test data to keep from hitting the server so much
+    deckbox_data = [{
+        "cardset": "Guildpact",
+        'name': 'Abyssal Nocturnus',
+        'inv_count': 1,
+        'foil': False
+    }]
+
+    card_data = {
+        "Guildpact": {
+            "Abyssal Nocturnus": {
+                'card_id': '/cards/4421',
+                'set_id': '/sets/24'
+            }
+        }
+    }
 
     for each in deckbox_data:
         name = each['name']
@@ -53,31 +69,31 @@ def fix_card_transitions(name):
     """
     Changes some minor card spelling to the MTGStocks variant.
     """
-    card_transfer_dict = {'Aetherspouts': 'AEtherspouts',
-                          'Aether Adept': 'AEther Adept',
-                          'Aether Gale': 'AEther Gale',
-                          'Aether Searcher': 'AEther Searcher',
-                          'Aether Vial': 'AEther Vial',
-                          'Aetherling': 'AEtherling',
-                          'Aethertow': 'AEthertow',
-                          'Scornful Aether-Lich': 'Scornful AEther-Lich',
-                          'Unravel the Aether': 'Unravel the AEther',
-                          'Yet Another Aether Vortex': 'Yet Another AEther Vortex',
-                          'Forest': None,
-                          'Swamp': None,
-                          'Mountain': None,
-                          'Plains': None,
-                          'Island': None}
+    card_transfer_dict = {
+        'Aetherspouts': 'AEtherspouts',
+        'Aether Adept': 'AEther Adept',
+        'Aether Gale': 'AEther Gale',
+        'Aether Searcher': 'AEther Searcher',
+        'Aether Vial': 'AEther Vial',
+        'Aetherling': 'AEtherling',
+        'Aethertow': 'AEthertow',
+        'Scornful Aether-Lich': 'Scornful AEther-Lich',
+        'Unravel the Aether': 'Unravel the AEther',
+        'Yet Another Aether Vortex': 'Yet Another AEther Vortex',
+        'Forest': None,
+        'Swamp': None,
+        'Mountain': None,
+        'Plains': None,
+        'Island': None
+    }
     return card_transfer_dict[name]
 
 
 class MtgSpider(scrapy.Spider):
     name = "mtg_prices"
-    # put all needed urls in start_urls, probably make it a comprehension
     start_urls = generate_needed_urls()
 
     def parse(self, response):
-        sleep(uniform(2.5, 5))
         if response.css("td.foilprice") and response.css("td.avgprice::text").extract_first(
         ) != 'N/A':
             yield {
